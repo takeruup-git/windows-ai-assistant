@@ -311,8 +311,15 @@ def add_task_from_content(content, app):
         try:
             tasks = json.loads(tasks_json_text)
         except json.JSONDecodeError:
-            app.update_progress(100, "エラーが発生しました")
-            return "タスクの抽出に失敗しました。テキスト形式を確認してください。"
+            # JSON解析に失敗した場合、より柔軟な方法で再試行
+            try:
+                # 一般的なJSON形式のエラーを修正
+                fixed_json = re.sub(r'(\w+):', r'"\1":', tasks_json_text)
+                fixed_json = re.sub(r'\'', r'"', fixed_json)
+                tasks = json.loads(fixed_json)
+            except json.JSONDecodeError:
+                app.update_progress(100, "エラーが発生しました")
+                return "タスクの抽出に失敗しました。テキスト形式を確認してください。"
         
         if not tasks:
             app.update_progress(100, "完了")
