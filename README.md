@@ -117,4 +117,4 @@ python ai_agent.py
 
 ## ライセンス
 
-MIT
+MIT# Additional documentation will be added here
